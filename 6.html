@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бүтээгдэхүүн - Дорнод Барилгачдын Холбоо</title>
+    <link rel="stylesheet" href="style6.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <div class="logo-box">Лого</div>
+                <span>ДОРНОД АЙМГИЙН БАРИЛГАЧДЫН ХОЛБОО</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">Нүүр</a></li>
+                <li><a href="#">Бидний тухай</a></li>
+                <li><a href="#">Мэдээ мэдээлэл</a></li>
+                <li><a href="#" class="active">Бүтээгдэхүүн</a></li>
+                <li><a href="#" class="login-btn">Нэвтрэх</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="page-header">
+            <h1>Манай Бүтээгдэхүүнүүд</h1>
+            <div class="line"></div>
+        </section>
+
+        <div class="product-grid" id="productGrid">
+            </div>
+    </div>
+
+    <div id="modalContainer"></div>
+
+    <div id="qpayModal" class="qpay-overlay">
+        <div class="qpay-container">
+            <span class="qpay-close" onclick="closeQpay()">&times;</span>
+            <img src="https://qpay.mn/design/images/qpay_logo.png" width="80">
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=QPay" alt="QR">
+            </div>
+            <p>Утасны дугаараа гүйлгээний утга дээр бичнэ үү.</p>
+        </div>
+    </div>
+
+    <script>
+        // Нийт 9 бүтээгдэхүүний дата
+        const products = [
+            { id: "prod1", name: "Обой КБ0014", price: "70,000₮", img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=500", desc: "Үйлдвэрлэсэн улс: Хятад. 1 боодол нь 5 мкв талбай. Урт: 10м | Өргөн: 0.53см" },
+            { id: "prod2", name: "Бетон зуурмаг M300", price: "280,000₮", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=500", desc: "Өндөр чанарын бат бөх бетон зуурмаг." },
+            { id: "prod3", name: "Улаан тоосго", price: "850₮", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=500", desc: "Барилгын стандартын шаардлага хангасан тоосго." },
+            { id: "prod4", name: "Цемент PC-42.5", price: "18,500₮", img: "https://images.unsplash.com/photo-1517646282030-291771966205?q=80&w=500", desc: "Барилгын суурь цутгалтын өндөр маркийн цемент." },
+            { id: "prod5", name: "Арматур (12мм)", price: "3,200₮", img: "https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?q=80&w=500", desc: "Стандартын шаардлага хангасан барилгын төмөр." },
+            { id: "prod6", name: "Шалны плита", price: "45,000₮", img: "https://images.unsplash.com/photo-1523413184742-99056298eb9e?q=80&w=500", desc: "Гоёмсог загвартай керамик плита." },
+            { id: "prod7", name: "Барилгын замаск", price: "12,000₮", img: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=500", desc: "Дотор заслын өнгөлгөөний замаск." },
+            { id: "prod8", name: "Төмөр хаалга", price: "450,000₮", img: "https://images.unsplash.com/photo-1506377585622-bedcbb027afc?q=80&w=500", desc: "Гадна талын хамгаалалтын төмөр хаалга." },
+            { id: "prod9", name: "Цонхны шил", price: "120,000₮", img: "https://images.unsplash.com/photo-1503708928676-1cb796a0891e?q=80&w=500", desc: "Дулаан хадгалалт сайтай цонхны шил." }
+        ];
+
+        const grid = document.getElementById('productGrid');
+        const modalCont = document.getElementById('modalContainer');
+
+        products.forEach(p => {
+            // Карт үүсгэх
+            grid.innerHTML += `
+                <div class="card">
+                    <div class="card-img"><img src="${p.img}"></div>
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <div class="price">${p.price}</div>
+                        <a href="#${p.id}" class="buy-button">Захиалах</a>
+                    </div>
+                </div>
+            `;
+
+            // Модал үүсгэх (Таван хошууг хассан)
+            modalCont.innerHTML += `
+                <div id="${p.id}" class="modal-overlay">
+                    <div class="modal-container">
+                        <a href="#" class="close-x">&times;</a>
+                        <div class="modal-layout">
+                            <div class="modal-image"><img src="${p.img}"></div>
+                            <div class="modal-info">
+                                <div class="title-row">
+                                    <h2>${p.name}</h2>
+                                    <i class="far fa-heart heart-icon"></i>
+                                </div>
+                                <div class="price-big">${p.price}</div>
+                                <div class="qty-section">
+                                    <label>Тоо хэмжээ</label>
+                                    <div class="qty-box">
+                                        <button onclick="changeQty(this, -1)">−</button>
+                                        <input type="text" value="1" readonly>
+                                        <button onclick="changeQty(this, 1)">+</button>
+                                    </div>
+                                    <span class="stock">Үлдэгдэл 1000</span>
+                                </div>
+                                <button class="cart-btn" onclick="alert('${p.name} сагсанд нэмэгдлээ!')">
+                                    <i class="fas fa-shopping-cart"></i> Сагсанд хийх - ${p.price}
+                                </button>
+                                <button class="buy-now-btn" onclick="openQpay()">
+                                    <i class="fas fa-wallet"></i> Худалдан авах
+                                </button>
+                                <div class="extra-info">
+                                    <p><b>Бүтээгдэхүүний дэлгэрэнгүй:</b></p>
+                                    <p>${p.desc}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        function changeQty(btn, delta) {
+            let input = btn.parentElement.querySelector('input');
+            let val = parseInt(input.value) + delta;
+            if (val >= 1) input.value = val;
+        }
+        function openQpay() { document.getElementById('qpayModal').style.display = 'flex'; }
+        function closeQpay() { document.getElementById('qpayModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
